@@ -2,7 +2,7 @@
 using namspace std;
 
 int main() {
-  int number = 100;
+  char number = 61;
   cout << number << endl;
   return 0;
 }
