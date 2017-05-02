@@ -1,4 +1,12 @@
-# ENGR101-2017
+# ENGR101-2017 Autonomous Vehicle Challenge (AVC)
+
 C++ code for controlling Raspberry Pi 2s in ENGR101 during 2017
 
-This is the current repo for all code after this point in time presented from the ENGR101 course. This will most likely be full of AVC code soon enough.
+This repo will hosts code for controlling our raspberry pi which will be completing a maze course for ENGR101.
+
+## Contributors
+*Jordan
+*Chris
+*Alex
+*James
+
