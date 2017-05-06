@@ -10,3 +10,25 @@ This repo will hosts code for controlling our raspberry pi which will be complet
 - James
 - Henry
 - Alex
+
+
+Extension to Weekly Plan
+
+_Changes have been made to intital weekly plan
+
+Week 2- Quadrant 1 Start 
+	Jordan, Alex- programming robot to move in according to the track white lines
+	James - Programming support, testing/ debugging
+	Henry, Chris - Use CAD to contruct base of chassis
+
+
+Week 3- Quadrant 1 Finish 
+	Jordan, Alex- Finish programming camera to pick up white line  
+	James- Testing/ commenting code to ensure meets quadrant 1 requirements
+	Henry, Chris - Deisgn chasis to ensure the robot stand upright
+
+
+Week 4- Quadrant 1 Start
+	Jordan, Alex- Use sensors, camera to make robot follow curved white path.
+	James- Programming support, check for potential issues with program. 
+	Henry, Chris - Deisgn chasis to ensure camera, sensor placement are idea.
