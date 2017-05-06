@@ -12,6 +12,8 @@ This repo will hosts code for controlling our raspberry pi which will be complet
 - Alex
 
 
+(plan need to be decided on and complete till week 7)
+
 # Weekly Plan
 
 ## Week 2, Quadrant 1 Start 
