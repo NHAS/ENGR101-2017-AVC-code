@@ -1,7 +1,8 @@
 #include <iostream>
-# include <time.h>
+#include <time.h>
 #include <csignal>
-# include "E101.h"
+#include <stdlib.h>
+#include "E101.h"
 using namespace std;
 
 const double CAMERA_WIDTH = 320; //Control Resolution from Camera
@@ -40,6 +41,44 @@ bool isOnLine() {
         return (sum > 55); // If 55% of the pixels are white, then assume that the line is in the middle
 }
 
+int getRightSideErrorSignal() {
+	int HalfWayThere = (int)(CAMERA_WIDTH/2);
+    int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
+          
+          
+    int RightPixels[TotalSidePixels] = {0}; // = {0} means set all the elements of the array as 0
+    for(int i = 0; i < TotalSidePixels; i++) {
+		RightPixels[i] = get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3); // Be warned this is right from the ROBOTS perspective
+        set_pixel(CAMERA_HEIGHT/2,  TotalSidePixels-i, 255,0,0);
+	}
+		  
+	int rightError = 0;
+	for(int i = 0; i < TotalSidePixels; i++) {
+		rightError += (RightPixels[i] > threshold)? i : 0;
+	}
+	
+	return rightError;
+}
+
+int getLeftSideErrorSignal() {
+	int HalfWayThere = (int)(CAMERA_WIDTH/2);
+    int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
+	
+	int LeftPixels[TotalSidePixels] = {0};
+
+	for(int i = 0; i < TotalSidePixels; i++) {
+		LeftPixels[i] = get_pixel(CAMERA_HEIGHT/2, i+TotalSidePixels+80, 3); //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle p$
+		set_pixel(CAMERA_HEIGHT/2,  i+TotalSidePixels+80, 255,0,0);
+	}
+	
+	int leftError = 0;
+	for(int i = 0; i < TotalSidePixels; i++) {
+		leftError += (LeftPixels[i] > threshold)? i : 0;
+	}
+	
+	return leftError;
+}
+
 
 int main() {
         init();
@@ -52,41 +91,29 @@ int main() {
         while(!done) {
 
                 take_picture();
-                int HalfWayThere = (int)(CAMERA_WIDTH/2);
-                int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
+          
 
-                int Right[TotalSidePixels] = {0}; // = {0} means set all the elements of the array as 0
-                int Left[TotalSidePixels] = {0};
-
-                for(int i = 0; i < TotalSidePixels; i++) {
-                        Right[i] = get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3); // Be warned this is right from the ROBOTS perspective
-                        set_pixel(CAMERA_HEIGHT/2,  TotalSidePixels-i, 255,0,0);
-
-                        Left[i] = get_pixel(CAMERA_HEIGHT/2, i+TotalSidePixels+80, 3); //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle p$
-                        set_pixel(CAMERA_HEIGHT/2,  i+TotalSidePixels+80, 255,0,0);
-                }
-
-                double rightError = 0, leftError = 0; // How much whiteness and how far away it is for both right and left directions.
-
-                for(int i = 0; i < TotalSidePixels; i++) {
-                        rightError += (double)( (Right[i] > threshold)? i : 0); // convert the element of the Right array to a double (number with decimal) and then scale it by a factor
-                        leftError += (double)( (Left[i] > threshold)? i : 0);
-                }
+                double rightError = ((double)getRightSideErrorSignal())*factor;
+                double leftError = ((double)getLeftSideErrorSignal()) *factor; // How much whiteness and how far away it is for both right and left directions.
 
                 string indicator = (isOnLine())? "ON" : "OFF";
-                cout << "[" << indicator << " LINE] Right error: " << rightError*factor << " Left error: " << leftError*factor << endl; // Cout is a function "<<" means put this stuff in th$
+                cout << "[" << indicator << " LINE] Right error: " << rightError << " Left error: " << leftError << endl; // Cout is a function "<<" means put this stuff in th$
 
-                if(rightError > leftError) {// Assume we are having a trigger on the right hand side, therefore turn left
-                        right_velocity = (70 + rightError*factor);
-                        left_velocity  =  (70 - rightError*factor);
-                } else { // And if we're being triggered on the left side. Then turn right
-                        right_velocity = (70 - leftError*factor);
-                        left_velocity  = (70 + leftError*factor);
-                }
+                
+                if(abs(rightError-leftError) < 10) { //If the difference between right and left error is small
+					right_velocity = 70;
+					left_velocity = 70; // Go straight
+				} else if(rightError > leftError) {// Assume we are having a trigger on the right hand side, therefore turn left
+                        right_velocity = (70 + rightError);
+                        left_velocity  =  (70 - leftError);
+                } else if(leftError > rightError){ // And if we're being triggered on the left side. Then turn right
+                        right_velocity = (70 - rightError);
+                        left_velocity  = (70 + leftError);
+                } 
 
                 cout << "Going L: " << left_velocity << " R: " << right_velocity << endl; 
-                set_motor(RIGHT_MOTOR, right_velocity);//right_velocity);//right_velocity);
-                set_motor(LEFT_MOTOR, left_velocity);//left_velocity);//left_velocity);
+                set_motor(RIGHT_MOTOR, right_velocity);
+                set_motor(LEFT_MOTOR, left_velocity);
                 sleep1(0,5000);
         }
 
