@@ -60,10 +60,7 @@ int main() {
 
                 for(int i = 0; i < TotalSidePixels; i++) {
                         Right[i] = get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3); // Be warned this is right from the ROBOTS perspective
-                        set_pixel(CAMERA_HEIGHT/2,  TotalSidePixels-i, 255,0,0);
-
                         Left[i] = get_pixel(CAMERA_HEIGHT/2, i+TotalSidePixels+80, 3); //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle p$
-                        set_pixel(CAMERA_HEIGHT/2,  i+TotalSidePixels+80, 255,0,0);
                 }
 
                 double rightError = 0, leftError = 0; // How much whiteness and how far away it is for both right and left directions.
