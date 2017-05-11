@@ -28,9 +28,7 @@ void betterStop(int i) {
 bool isOnLine() {
         int LineDetect[80] = {0}; // The line detection pixels are directly in the center
         for(int i = 0; i < 80; i++) {
-                LineDetect[i] = get_pixel(CAMERA_HEIGHT/2, i+(int)(CAMERA_WIDTH/2)-40, 3); // Skip the right hand detection pixels and just have the middle 80 pixels
-                set_pixel(CAMERA_HEIGHT/2+1,  i+(CAMERA_WIDTH/2)-40, 0,255,0); 
-        }
+                LineDetect[i] = get_pixel(CAMERA_HEIGHT/2, i+(int)(CAMERA_WIDTH/2)-40, 3); // Skip the right hand detection pixels and just have the middle 80 pixels        }
 
         double sum = 0;
         for(int i = 0; i < 80; i++) { //For every pixel in the line detection if its above the threshold add a 1, or if its below set as 0
@@ -48,7 +46,6 @@ int getRightSideErrorSignal() {
     	int RightPixels[TotalSidePixels] = {0}; // = {0} means set all the elements of the array as 0
     	for(int i = 0; i < TotalSidePixels; i++) {
 		RightPixels[i] = get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3); // Be warned this is right from the ROBOTS perspective
-        	set_pixel(CAMERA_HEIGHT/2,  TotalSidePixels-i, 255,0,0);
 	}
 
 	int rightError = 0;
@@ -67,7 +64,6 @@ int getLeftSideErrorSignal() {
 
 	for(int i = 0; i < TotalSidePixels; i++) {
 		LeftPixels[i] = get_pixel(CAMERA_HEIGHT/2, i+TotalSidePixels+80, 3); //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle p$
-		set_pixel(CAMERA_HEIGHT/2,  i+TotalSidePixels+80, 255,0,0);
 	}
 
 	int leftError = 0;
