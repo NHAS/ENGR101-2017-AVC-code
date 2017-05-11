@@ -43,39 +43,38 @@ bool isOnLine() {
 
 int getRightSideErrorSignal() {
 	int HalfWayThere = (int)(CAMERA_WIDTH/2);
-    int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
-          
-          
-    int RightPixels[TotalSidePixels] = {0}; // = {0} means set all the elements of the array as 0
-    for(int i = 0; i < TotalSidePixels; i++) {
+    	int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
+
+    	int RightPixels[TotalSidePixels] = {0}; // = {0} means set all the elements of the array as 0
+    	for(int i = 0; i < TotalSidePixels; i++) {
 		RightPixels[i] = get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3); // Be warned this is right from the ROBOTS perspective
-        set_pixel(CAMERA_HEIGHT/2,  TotalSidePixels-i, 255,0,0);
+        	set_pixel(CAMERA_HEIGHT/2,  TotalSidePixels-i, 255,0,0);
 	}
-		  
+
 	int rightError = 0;
 	for(int i = 0; i < TotalSidePixels; i++) {
 		rightError += (RightPixels[i] > threshold)? i : 0;
 	}
-	
+
 	return rightError;
 }
 
 int getLeftSideErrorSignal() {
 	int HalfWayThere = (int)(CAMERA_WIDTH/2);
-    int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
-	
+    	int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
+
 	int LeftPixels[TotalSidePixels] = {0};
 
 	for(int i = 0; i < TotalSidePixels; i++) {
 		LeftPixels[i] = get_pixel(CAMERA_HEIGHT/2, i+TotalSidePixels+80, 3); //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle p$
 		set_pixel(CAMERA_HEIGHT/2,  i+TotalSidePixels+80, 255,0,0);
 	}
-	
+
 	int leftError = 0;
 	for(int i = 0; i < TotalSidePixels; i++) {
 		leftError += (LeftPixels[i] > threshold)? i : 0;
 	}
-	
+
 	return leftError;
 }
 
@@ -84,14 +83,13 @@ int main() {
         init();
 
         signal(2, betterStop);
-        
+
         int right_velocity = 0;
         int left_velocity = 0;
 
         while(!done) {
 
                 take_picture();
-          
 
                 double rightError = ((double)getRightSideErrorSignal())*factor;
                 double leftError = ((double)getLeftSideErrorSignal()) *factor; // How much whiteness and how far away it is for both right and left directions.
@@ -99,19 +97,19 @@ int main() {
                 string indicator = (isOnLine())? "ON" : "OFF";
                 cout << "[" << indicator << " LINE] Right error: " << rightError << " Left error: " << leftError << endl; // Cout is a function "<<" means put this stuff in th$
 
-                
+
                 if(abs(rightError-leftError) < 10) { //If the difference between right and left error is small
-					right_velocity = 70;
-					left_velocity = 70; // Go straight
-				} else if(rightError > leftError) {// Assume we are having a trigger on the right hand side, therefore turn left
+			right_velocity = 70;
+			left_velocity = 70; // Go straight
+		} else if(rightError > leftError) {// Assume we are having a trigger on the right hand side, therefore turn left
                         right_velocity = (70 + rightError);
                         left_velocity  =  (70 - leftError);
                 } else if(leftError > rightError){ // And if we're being triggered on the left side. Then turn right
                         right_velocity = (70 - rightError);
                         left_velocity  = (70 + leftError);
-                } 
+                }
 
-                cout << "Going L: " << left_velocity << " R: " << right_velocity << endl; 
+                cout << "Velocity L: " << left_velocity << " Velocity R: " << right_velocity << endl;
                 set_motor(RIGHT_MOTOR, right_velocity);
                 set_motor(LEFT_MOTOR, left_velocity);
                 sleep1(0,5000);
