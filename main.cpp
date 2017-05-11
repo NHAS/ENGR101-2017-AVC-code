@@ -78,9 +78,9 @@ int main() {
 
                 if(rightError > leftError) {// Assume we are having a trigger on the right hand side, therefore turn left
                         right_velocity = (70 + rightError*factor);
-                        left_velocity  =  (70 - rightError*factor);
+                        left_velocity  = (70 - leftError*factor);
                 } else { // And if we're being triggered on the left side. Then turn right
-                        right_velocity = (70 - leftError*factor);
+                        right_velocity = (70 - rightError*factor);
                         left_velocity  = (70 + leftError*factor);
                 }
 
