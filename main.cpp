@@ -27,7 +27,7 @@ void betterStop(int i) {
 
 bool isOnLine() {
         int LineDetect[80] = {0}; // The line detection pixels are directly in the center
-        for(int i = 0; i < 80; i++) {
+        for(int i = 0; i < 80; i++) 
                 LineDetect[i] = get_pixel(CAMERA_HEIGHT/2, i+(int)(CAMERA_WIDTH/2)-40, 3); // Skip the right hand detection pixels and just have the middle 80 pixels        }
 
         double sum = 0;
@@ -87,24 +87,13 @@ int main() {
 
                 take_picture();
 
-                double rightError = ((double)getRightSideErrorSignal())*factor;
-                double leftError = ((double)getLeftSideErrorSignal()) *factor; // How much whiteness and how far away it is for both right and left directions.
+                double rightError = ((double)getRightSideErrorSignal());
+                double leftError = ((double)getLeftSideErrorSignal()); // How much whiteness and how far away it is for both right and left directions.
 
-                string indicator = (isOnLine())? "ON" : "OFF";
-                cout << "[" << indicator << " LINE] Right error: " << rightError << " Left error: " << leftError << endl; // Cout is a function "<<" means put this stuff in th$
-
-
-                if(abs(rightError-leftError) < 10) { //If the difference between right and left error is small
-			right_velocity = 70;
-			left_velocity = 70; // Go straight
-		} else if(rightError > leftError) {// Assume we are having a trigger on the right hand side, therefore turn left
-                        right_velocity = (70 + rightError);
-                        left_velocity  =  (70 - leftError);
-                } else if(leftError > rightError){ // And if we're being triggered on the left side. Then turn right
-                        right_velocity = (70 - rightError);
-                        left_velocity  = (70 + leftError);
-                }
-
+		double error_signal = (rightError - leftError) * factor;
+		
+		int right_velocity = 50+error_signal;
+		int left_velocity = 50-1*error_signal;
                 cout << "Velocity L: " << left_velocity << " Velocity R: " << right_velocity << endl;
                 set_motor(RIGHT_MOTOR, right_velocity);
                 set_motor(LEFT_MOTOR, left_velocity);
