@@ -11,7 +11,7 @@ const double CAMERA_HEIGHT = 240; //Control Resolution from Camera
 const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
 
-double factor = 0.009; // Scaling value to be determined by experiments
+double factor = 0.011; // Scaling value to be determined by experiments
 const int threshold = 120;
 
 bool done = false;
@@ -92,8 +92,8 @@ int main() {
 
 		double error_signal = (rightError - leftError) * factor;
 		
-		int right_velocity = 50+error_signal;
-		int left_velocity = 50-1*error_signal;
+		int right_velocity = 60+error_signal;
+		int left_velocity = 60-1*error_signal;
                 cout << "Velocity L: " << left_velocity << " Velocity R: " << right_velocity << endl;
                 set_motor(RIGHT_MOTOR, right_velocity);
                 set_motor(LEFT_MOTOR, left_velocity);
