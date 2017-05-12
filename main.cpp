@@ -26,49 +26,33 @@ void betterStop(int i) {
 }
 
 bool isOnLine() {
-        int LineDetect[80] = {0}; // The line detection pixels are directly in the center
-        for(int i = 0; i < 80; i++) 
-                LineDetect[i] = get_pixel(CAMERA_HEIGHT/2, i+(int)(CAMERA_WIDTH/2)-40, 3); // Skip the right hand detection pixels and just have the middle 80 pixels        }
-
         double sum = 0;
-        for(int i = 0; i < 80; i++) { //For every pixel in the line detection if its above the threshold add a 1, or if its below set as 0
-                sum += (LineDetect[i] > threshold)? 1 : 0;
-        }
+        for(int i = 0; i < 80; i++) //80 Pixels in the center are our detector
+			if(get_pixel(CAMERA_HEIGHT/2, i+(int)(CAMERA_WIDTH/2)-40, 3) > threshold)  // Go from -40 from the center to +40 of the center
+				sum++;
+
         sum = (sum/80)*100; // Percentages
         cout << "Percentage sum: " << sum << endl;
         return (sum > 55); // If 55% of the pixels are white, then assume that the line is in the middle
 }
 
 int getRightSideErrorSignal() {
-	int HalfWayThere = (int)(CAMERA_WIDTH/2);
-    	int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
-
-    	int RightPixels[TotalSidePixels] = {0}; // = {0} means set all the elements of the array as 0
-    	for(int i = 0; i < TotalSidePixels; i++) {
-		RightPixels[i] = get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3); // Be warned this is right from the ROBOTS perspective
-	}
-
+    int TotalRightSidePixels = (int)(CAMERA_WIDTH/2)-40; //The -40 is so it doesnt read the 40 pixels that are used for line detection in the middle
+	
 	int rightError = 0;
-	for(int i = 0; i < TotalSidePixels; i++) {
-		rightError += (RightPixels[i] > threshold)? i : 0;
+    for(int i = 0; i < TotalSidePixels; i++) {
+		rightError += ( get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3) > threshold) ? i : 0; // Be warned this is right from the ROBOTS perspective
 	}
 
 	return rightError;
 }
 
 int getLeftSideErrorSignal() {
-	int HalfWayThere = (int)(CAMERA_WIDTH/2);
-    	int TotalSidePixels = HalfWayThere-40; // The total number of pixels of the right and left side sample
-
-	int LeftPixels[TotalSidePixels] = {0};
-
-	for(int i = 0; i < TotalSidePixels; i++) {
-		LeftPixels[i] = get_pixel(CAMERA_HEIGHT/2, i+TotalSidePixels+80, 3); //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle p$
-	}
-
+    int TotalLeftSidePixels = (int)(CAMERA_WIDTH/2)-40; //The -40 is so it doesnt read the 40 pixels that are used for line detection in the middle
+	
 	int leftError = 0;
 	for(int i = 0; i < TotalSidePixels; i++) {
-		leftError += (LeftPixels[i] > threshold)? i : 0;
+		leftError += ( get_pixel(CAMERA_HEIGHT/2, i+TotalSidePixels+80, 3) > threshold ) ? i : 0; //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle p$
 	}
 
 	return leftError;
@@ -80,24 +64,20 @@ int main() {
 
         signal(2, betterStop);
 
-        int right_velocity = 0;
-        int left_velocity = 0;
-
         while(!done) {
 
-                take_picture();
+			take_picture();
 
-                double rightError = ((double)getRightSideErrorSignal());
-                double leftError = ((double)getLeftSideErrorSignal()); // How much whiteness and how far away it is for both right and left directions.
+			double rightError = ((double)getRightSideErrorSignal());
+			double leftError = ((double)getLeftSideErrorSignal()); // How much whiteness and how far away it is for both right and left directions.
 
-		double error_signal = (rightError - leftError) * factor;
+			double error_signal = (rightError - leftError) * factor;
 		
-		int right_velocity = 60+error_signal;
-		int left_velocity = 60-1*error_signal;
-                cout << "Velocity L: " << left_velocity << " Velocity R: " << right_velocity << endl;
-                set_motor(RIGHT_MOTOR, right_velocity);
-                set_motor(LEFT_MOTOR, left_velocity);
-                sleep1(0,5000);
+			int right_velocity = 60+error_signal;
+			int left_velocity = 60-1*error_signal;
+			cout << "Velocity L: " << left_velocity << " Velocity R: " << right_velocity << endl;
+			set_motor(RIGHT_MOTOR, right_velocity);
+			set_motor(LEFT_MOTOR, left_velocity);   
         }
 
 return 0;
