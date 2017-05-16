@@ -4,6 +4,8 @@ C++ code for controlling Raspberry Pi 2s in ENGR101 during 2017
 
 This repo will hosts code for controlling our raspberry pi which will be completing a maze course for ENGR101.
 
+pi IP Address: pi@10.140.30.137
+
 ## Contributors
 - Jordan
 - Chris
