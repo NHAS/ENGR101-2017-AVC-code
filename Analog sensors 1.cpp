@@ -2,6 +2,7 @@
 #include <time.h>
 #include <csignal>
 #include <stdlib.h>
+#include <stdio.h>
 #include "E101.h"
 
 const int LEFT_SENSOR = 0;
