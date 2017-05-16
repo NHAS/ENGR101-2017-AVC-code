@@ -7,6 +7,7 @@
 
 using std::cout;
 using std::endl;
+using std::string;
 using std::flush;
 using std::chrono::high_resolution_clock;
 
@@ -17,7 +18,6 @@ const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
 
 double kP = 0.011; // Scaling value to be determined by experiments
-double kD = 5.0;
 const int threshold = 120;
 
 bool done = false;
@@ -27,15 +27,14 @@ void betterstop(int x) {
 	set_motor(LEFT_MOTOR, 0);
 	set_motor(RIGHT_MOTOR, 0);
 	
-	stop(0);
 	done = true;
 }
 
-bool isOnLine() {
+bool isOnLine(int height) {
 	const int numberCenterPixels = 40;
         double totalPixelsWhite = 0;
         for(int i = 0; i < numberCenterPixels; i++) { //80 Pixels in the center are our detector
-			if(get_pixel(CAMERA_HEIGHT/2, i+(int)(CAMERA_WIDTH/2)-20, 3) > threshold) {  // Go from -40 from the center to +40 of the center
+			if(get_pixel(height, i+(int)(CAMERA_WIDTH/2)-20, 3) > threshold) {  // Go from -40 from the center to +40 of the center
 				totalPixelsWhite++;
 			} 
 	}
@@ -70,36 +69,61 @@ int getLeftSideErrorSignal() {
 int main() {
         signal(2, betterstop);
 	init();
+
+	connect_to_server("130.195.6.196", 1024);
 	
+	send_to_server("Please");
+	
+	char returnMessage[24] = {'\0'};
+	receive_from_server(returnMessage);
+	string StringReturnMessage(returnMessage);
+	StringReturnMessage+="Please";
+
+	for(int i = 0; i < StringReturnMessage.size(); i++) {
+		returnMessage[i] = StringReturnMessage[i];
+	}
+
+	send_to_server(returnMessage);
+	
+	sleep1(1,0);
+
 	int left_velocity = 0;
 	int right_velocity = 0;
 	while(!done) {
 		take_picture();
-				
 				double rightError = ((double)getRightSideErrorSignal());
 				double leftError  = ((double)getLeftSideErrorSignal()); 
 
-				if(!isOnLine() && rightError <= 0 && leftError <= 0) {
-						if(left_velocity > right_velocity) { // We were turning right;
-							set_motor(LEFT_MOTOR, -50);
+
+				
+
+				if(!isOnLine(CAMERA_HEIGHT/2) && rightError <= 0 && leftError <= 0) {
+						if(left_velocity < right_velocity) { 
+							set_motor(LEFT_MOTOR, -60);
 							set_motor(RIGHT_MOTOR, -30);
-							sleep1(0,5000);
-						} else { // We were turning left
+							sleep1(0,2000);
+						} else { 
 							set_motor(LEFT_MOTOR, -30);
-							set_motor(RIGHT_MOTOR, -50);
-							sleep(0,5000);
+							set_motor(RIGHT_MOTOR, -60);
+							sleep1(0,2000);
 						}
-						continue;
+					continue;
 				}
 
+				if(rightError > 3500 && leftError > 3500 && isOnLine(CAMERA_HEIGHT/2+40)) {
+					set_motor(RIGHT_MOTOR, 60);
+					set_motor(LEFT_MOTOR, 20);
+					cout << "\nJunction" << endl;
+					sleep1(0,500000);
+					continue;
+				}
 
 				double error_signal = (rightError - leftError);
 				double proportional_signal = error_signal*kP;
 
 				int final_signal = proportional_signal;
-				right_velocity = 60+final_signal;
-				left_velocity = 60-1*final_signal;
-				cout << isOnLine()  << " left: " << left_velocity << " right: " << right_velocity << endl; 
+				right_velocity = 100+final_signal;
+				left_velocity = 100-1*final_signal;
 
 				set_motor(RIGHT_MOTOR, right_velocity);
 				set_motor(LEFT_MOTOR, left_velocity);   
@@ -107,6 +131,6 @@ int main() {
 
 
 	}
-
+	stop(0);
 return 0;
 }
