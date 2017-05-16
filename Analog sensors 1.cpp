@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include "E101.h"
 
-const int LEFT_SENSOR = 1;
-const int RIGHT_SENSOR = 2;
+const int LEFT_SENSOR = 0;
+const int RIGHT_SENSOR = 1;
 	
 const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
