@@ -7,13 +7,13 @@
 
 const int LEFT_SENSOR = 0;
 const int RIGHT_SENSOR = 1;
-const int MID_SENSOR = 2;
+//const int MID_SENSOR = 2;
 	
 const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
 
 const int DEF_SPD = 50; // Default speed for motors
-const int THRESHOLD = 80; // Threshold value to allow turning - Change with testing.
+//const int THRESHOLD = 80; // Threshold value to allow turning - Change with testing.
 
 double mazeFactor = 0.15; // To be changed with testing.
 
@@ -26,6 +26,7 @@ int main(){
 	//Variables for the sensor readings.
 	int left_reading = 0;
 	int right_reading = 0;
+	//int mid_reading = 0;
 
 	while(!mazeDone){ //Looping whilst 'done' condition is not met.
 		
@@ -39,13 +40,13 @@ int main(){
 		double sensor_difference = (right_reading - left_reading) * mazeFactor;
 		
 		// If the front value is lower than a threshold level.
-		if(mid_reading < THRESHOLD){
+		//if(mid_reading < THRESHOLD){
 			
 			// If left reading is greater (further away), turn left.
 			if(left_reading > right_reading){
 			
-				set_motor(LEFT_MOTOR, DEF_SPD - 1*sensor_difference);
-				set_motor(RIGHT_MOTOR, DEF_SPD + sensor_difference);
+				set_motor(LEFT_MOTOR, DEF_SPD + 1*sensor_difference);
+				set_motor(RIGHT_MOTOR, DEF_SPD - sensor_difference);
 			}
 		
 			// If right reading is greater, turn right.
@@ -53,7 +54,7 @@ int main(){
 				set_motor(LEFT_MOTOR, DEF_SPD - 1*sensor_difference);
 				set_motor(RIGHT_MOTOR, DEF_SPD + sensor_difference);
 			}
-		}
+		//}
 		
 		// Otherwise, continue forward.
 		else{
