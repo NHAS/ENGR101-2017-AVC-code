@@ -1,5 +1,5 @@
 #include <iostream>
-#include <time.h>
+pi@10.140.30.137#include <time.h>
 #include <csignal>
 #include <stdlib.h>
 #include <chrono>
@@ -69,10 +69,10 @@ int getLeftSideErrorSignal() {
 int main() {
         signal(2, betterstop);
 	init();
-	
+
 	connect_to_server("130.195.6.196", 1024);
 	
-	send_to_server("Please");
+	send_to_server("Pasdasdjhe");
 	
 	char returnMessage[24] = {'\0'};
 	receive_from_server(returnMessage);
