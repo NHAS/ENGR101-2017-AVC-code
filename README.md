@@ -28,9 +28,9 @@ pi IP Address: pi@10.140.30.137
 - [ ] Jordan              - Program white line maze.
 - [ ] Alex, James         - Program walled maze code.
 - [ ] Jordan, Alex, James - Code review to bring up understanding of current work.
-- [x ] Henry, Chris        - Finish creating battery housing. 
+- [x] Henry, Chris        - Finish creating battery housing. 
 - [ ] Henry, Chris        - Create a form of cable management. 
-- [x ] Henry, Chris        - Mount range sensors at an effectively. 1/2 done
+- [x] Henry, Chris        - Mount range sensors at an effectively. 1/2 done
 
 
 ## Week 4 
