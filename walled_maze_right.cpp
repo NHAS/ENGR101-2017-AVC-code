@@ -12,7 +12,7 @@ const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
 
 const int DEF_SPD = 50; // Default speed for motors
-const int THRESHOLD = 90; // Threshold value for proximity to left wall - Change with testing.
+const int THRESHOLD = 70; // Threshold value for proximity to left wall - Change with testing.
 
 double mazeFactor = 0.15; // To be changed with testing.
 
@@ -25,8 +25,7 @@ int main(){
 	//Variables for the sensor readings.
 	int left_reading = 0;
 	int right_reading = 0;
-	//int mid_reading = 0;
-
+	
 	while(!mazeDone){ //Looping whilst 'done' condition is not met.
 		
 		//Reading sensors
@@ -36,7 +35,6 @@ int main(){
 		std::cout << "Left: " << left_reading << " Right: " << right_reading << std::endl; //Printing sensor values.
 		
 		double wall_distance = (THRESHOLD - right_reading) * mazeFactor;
-
 			
 		// If right reading is too great, turn left.
 		if(right_reading > THRESHOLD){
