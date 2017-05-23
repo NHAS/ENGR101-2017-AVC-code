@@ -50,6 +50,14 @@ int getLeftSideErrorSignal() {
 	return leftError;
 }
 
+int getTopErrorSignal() {
+	int topError = 0;
+	for(int i = 0; i < 150; i++) {
+		topError += ( get_pixel(150, CAMERA_WIDTH/2-75+i, 3) > threshold ) ? i : 0;
+	}
+	return topError;
+}
+
 //////////////////////////////// Helper functions ///////////////////////////////////////
 
 
@@ -101,7 +109,7 @@ void QuandrantTwo() {
 					continue; // Skip the rest of the instructions in this loop
 				}
 
-				if(rightError > 3500 && leftError > 3500) {// If both are high values then its most probably a junction
+				if(rightError > 1500 && leftError > 1500) {// If both are high values then its most probably a junction
 					break; // Die out of quad 2
 				}
 				
@@ -122,31 +130,34 @@ void QuandrantTwo() {
 
 void QuandrantThree() {
 	cout << "Running Quandrant 3..." << endl;
-	
+	int right_velocity = 0;
+	int left_velocity = 0;
+	const double kP = 0.011;	
 	while(true) {
 		take_picture();
-		
-		int verticalLeftError = 0;
-		for(int y = 0; y < 70; y++) {
-			verticalLeftError += (get_pixel(CAMERA_HEIGHT/2+y, CAMERA_WIDTH/2-85, 3) > threshold)? y : 0;
-		}
-		
-		int verticalRightError = 0;
-		for(int y = 0; y < 70; y++) {
-			verticalRightError += (get_pixel(CAMERA_HEIGHT/2+y, CAMERA_WIDTH/2+85, 3) > threshold)? y: 0;
-		}
-		
-		int horizontalTopLeftError = 0; 
-		for(int x = 0; x < 85; x++) 
-			horizontalTopLeftError += (get_pixel(CAMERA_HEIGHT/2+85, CAMERA_WIDTH/2+(85-x), 3) > threshold)? x : 0;
-		
-		int horizontalTopRightError = 0; 
-		for(int x = 0; x < 85; x++) 
-			horizontalTopRightError += (get_pixel(CAMERA_HEIGHT/2+85, CAMERA_WIDTH/2-85+x, 3) > threshold)? x : 0;
-		
-		
-		
-		
+
+				
+			        double rightError = ((double)getRightSideErrorSignal());
+                                double leftError  = ((double)getLeftSideErrorSignal());
+
+
+				if(getTopErrorSignal() < 2 && rightError > 1500 && leftError > 1500) {
+					rightError = 0;
+					leftError = 2000;
+				}
+
+
+                                double error_signal = (rightError - leftError);
+                                double proportional_signal = error_signal*kP;
+
+                                int final_signal = proportional_signal;
+                                right_velocity = 80+final_signal;
+                                left_velocity = 80-1*final_signal;
+
+                                set_motor(RIGHT_MOTOR, right_velocity);
+                                set_motor(LEFT_MOTOR, left_velocity);
+
+				
 	}
 	
 	
