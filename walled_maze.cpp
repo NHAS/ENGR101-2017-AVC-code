@@ -38,16 +38,30 @@ int main(){
 			
 		// If closer to the right wall, turn left.
 		if(right_reading > THRESHOLD){
+			if(right_reading > THRESHOLD-100){
+				set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
+				set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
+				sleep1(0, 50000);
+			}
+			else{
 			//wall_distance will be positive, so add to left wheel and remove from right.
 			set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
 			set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
+			}
 		}
 		
 		// If closer to the left wall, turn right.
-		else if(right_reading < THRESHOLD) {		
+		else if(right_reading < THRESHOLD) {	
+			if(right_reading < THRESHOLD+100){
+				set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
+			set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
+				sleep1(1, 0);
+			}
+			else{
 			//wall_distance will be negative, so add to left wheel and remove from right.
 			set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
 			set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
+			}
 		}
 		
 		// Otherwise, continue forward.
