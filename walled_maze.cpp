@@ -56,7 +56,7 @@ int main(){
 				sleep1(0, 250000);
 				set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
 				set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
-				sleep1(0, 700000);
+				sleep1(0, 550000);
 			}
 			else{
 			//wall_distance will be negative, so add to left wheel and remove from right.
