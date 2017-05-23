@@ -14,7 +14,7 @@ const int RIGHT_MOTOR = 2;
 const int DEF_SPD = 50; // Default speed for motors
 const int THRESHOLD = 310; // Threshold value for proximity to left wall - Change with testing.
 
-double mazeFactor = 0.20; // To be changed with testing.
+double mazeFactor = 0.175; // To be changed with testing.
 
 bool mazeDone = false;
 
@@ -34,16 +34,16 @@ int main(){
 		
 		std::cout << "Left: " << left_reading << " Right: " << right_reading << std::endl; //Printing sensor values.
 		
-		double wall_distance = (THRESHOLD - right_reading) * mazeFactor;
+		double wall_distance = (THRESHOLD - right_reading) * mazeFactor; //Distance from the wall multiplied by a constant.
 			
-		// If right reading is too great, turn left.
+		// If closer to the right wall, turn left.
 		if(right_reading > THRESHOLD){
 			
 			set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
 			set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
 		}
 		
-		// If right reading too small, turn right.
+		// If closer to the left wall, turn right.
 		else if(right_reading < THRESHOLD) {			
 			set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
 			set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
