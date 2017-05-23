@@ -12,7 +12,7 @@ const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
 
 const int DEF_SPD = 50; // Default speed for motors
-const int THRESHOLD = 310; // Threshold value for proximity to left wall - Change with testing.
+const int THRESHOLD = 285; // Threshold value for proximity to left wall - Change with testing.
 
 double mazeFactor = 0.15; // To be changed with testing.
 
