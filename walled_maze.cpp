@@ -41,7 +41,7 @@ int main(){
 			if(right_reading > THRESHOLD+100){
 				set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
 				set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
-				sleep1(0, 350000);
+				sleep1(0, 300000);
 			}
 			else{
 			//wall_distance will be positive, so add to left wheel and remove from right.
@@ -53,7 +53,7 @@ int main(){
 		// If closer to the left wall, turn right.
 		else if(right_reading < THRESHOLD) {	
 			if(right_reading < THRESHOLD-165){
-				sleep1(0, 100000);
+				sleep1(0, 150000);
 				set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
 				set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
 				sleep1(0, 700000);
