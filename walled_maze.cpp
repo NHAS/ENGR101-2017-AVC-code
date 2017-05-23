@@ -12,9 +12,9 @@ const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
 
 const int DEF_SPD = 50; // Default speed for motors
-const int THRESHOLD = 70; // Threshold value for proximity to left wall - Change with testing.
+const int THRESHOLD = 310; // Threshold value for proximity to left wall - Change with testing.
 
-double mazeFactor = 0.15; // To be changed with testing.
+double mazeFactor = 0.20; // To be changed with testing.
 
 bool mazeDone = false;
 
@@ -45,8 +45,8 @@ int main(){
 		
 		// If right reading too small, turn right.
 		else if(right_reading < THRESHOLD) {			
-			set_motor(LEFT_MOTOR, DEF_SPD - 1*wall_distance);
-			set_motor(RIGHT_MOTOR, DEF_SPD + wall_distance);
+			set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
+			set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
 		}
 		
 		// Otherwise, continue forward.
@@ -55,7 +55,7 @@ int main(){
 			set_motor(RIGHT_MOTOR, DEF_SPD);
 		}
 		//Wait for a lil'
-		sleep1(0, 5000);
+		//sleep1(0, 5000);
 	}
 return 0;
 }
