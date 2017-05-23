@@ -1,6 +1,4 @@
 #include <iostream>
-#include <time.h>
-#include <csignal>
 #include <stdlib.h>
 #include <chrono>
 #include "E101.h"
@@ -9,7 +7,6 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::flush;
-using std::chrono::high_resolution_clock;
 
 const double CAMERA_WIDTH = 320; //Control Resolution from Camera
 const double CAMERA_HEIGHT = 240; //Control Resolution from Camera
@@ -20,21 +17,13 @@ const int RIGHT_MOTOR = 2;
 double kP = 0.011; // Scaling value to be determined by experiments
 const int threshold = 120;
 
-bool done = false;
-
-void betterstop(int x) {
-	cout << "\nSignal killed. " << endl;
-	set_motor(LEFT_MOTOR, 0);
-	set_motor(RIGHT_MOTOR, 0);
-	
-	done = true;
-}
+//////////////////////////////// Helper functions ///////////////////////////////////////
 
 bool isOnLine(int height) {
 	const int numberCenterPixels = 40;
     double averagePixelWhiteness = 0;
     for(int i = 0; i < numberCenterPixels; i++)  //80 Pixels in the center are our detector
-		averagePixelWhiteness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 3) > threshold)   // Go from -20 from the center to +20 of the center
+		averagePixelWhiteness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 3);   // Go from -20 from the center to +20 of the center
 
 	averagePixelWhiteness /= numberCenterPixels;
 		
@@ -56,16 +45,17 @@ int getLeftSideErrorSignal() {
 	
 	int leftError = 0;
 	for(int i = 0; i < TotalLeftSidePixels; i++) 
-		leftError += ( get_pixel(CAMERA_HEIGHT/2, i+TotalLeftSidePixels+80, 3) > threshold ) ? i : 0; //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle p$
+		leftError += ( get_pixel(CAMERA_HEIGHT/2, i+TotalLeftSidePixels+80, 3) > threshold ) ? i : 0; //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle 
 		
 	return leftError;
 }
 
+//////////////////////////////// Helper functions ///////////////////////////////////////
 
-int main() {
-	init();
-	signal(2, betterstop);
-	
+
+
+void QuandrantOne() {
+	cout << "Running quandrant 1... " << flush;
 	connect_to_server("130.195.6.196", 1024);
 	
 	send_to_server("Please");
@@ -82,24 +72,28 @@ int main() {
 	send_to_server(returnMessage);
 	
 	sleep1(1,0);
+	cout << "Done!" << endl;
+}
 
+void QuandrantTwo() {
+	
+	cout << "Running quandrant 2..." << flush;
 	int left_velocity = 0;
 	int right_velocity = 0;
-	while(!done) {
+	while(true) {
 		take_picture();
 				double rightError = ((double)getRightSideErrorSignal());
 				double leftError  = ((double)getLeftSideErrorSignal()); 
 
 				if(!isOnLine(CAMERA_HEIGHT/2) && rightError <= 0 && leftError <= 0) { // If we're off the line and cant see the line
-						cout << "Lost line" << endl;
-						cout << "\tTurning " << flush;
+						
 						if(left_velocity < right_velocity) { //If we were last turning left
-							cout << "Left to find it." << endl;
+							
 							set_motor(LEFT_MOTOR, -60);
 							set_motor(RIGHT_MOTOR, -30);
 							sleep1(0,2000);
 						} else { // If we were last turning right
-							cout << "Right to find it." << endl;
+							
 							set_motor(LEFT_MOTOR, -30);
 							set_motor(RIGHT_MOTOR, -60);
 							sleep1(0,2000);
@@ -107,14 +101,10 @@ int main() {
 					continue; // Skip the rest of the instructions in this loop
 				}
 
-				if(rightError > 3500 && leftError > 3500 && isOnLine(CAMERA_HEIGHT/2+40)) { 
-					set_motor(RIGHT_MOTOR, 60);
-					set_motor(LEFT_MOTOR, 20);
-					
-					sleep1(0,500000);
-					continue;
+				if(rightError > 3500 && leftError > 3500) {// If both are high values then its most probably a junction
+					break; // Die out of quad 2
 				}
-
+				
 				double error_signal = (rightError - leftError);
 				double proportional_signal = error_signal*kP;
 
@@ -124,10 +114,59 @@ int main() {
 
 				set_motor(RIGHT_MOTOR, right_velocity);
 				set_motor(LEFT_MOTOR, left_velocity);   
-
-
-
 	}
+	
+	cout << "Done!" << endl;
+}
+
+
+void QuandrantThree() {
+	cout << "Running Quandrant 3..." << endl;
+	
+	while(true) {
+		take_picture();
+		
+		int verticalLeftError = 0;
+		for(int y = 0; y < 70; y++) {
+			verticalLeftError += (get_pixel(CAMERA_HEIGHT/2+y, CAMERA_WIDTH/2-85, 3) > threshold)? y : 0;
+		}
+		
+		int verticalRightError = 0;
+		for(int y = 0; y < 70; y++) {
+			verticalRightError += (get_pixel(CAMERA_HEIGHT/2+y, CAMERA_WIDTH/2+85, 3) > threshold)? y: 0;
+		}
+		
+		int horizontalTopLeftError = 0; 
+		for(int x = 0; x < 85; x++) 
+			horizontalTopLeftError += (get_pixel(CAMERA_HEIGHT/2+85, CAMERA_WIDTH/2+(85-x), 3) > threshold)? x : 0;
+		
+		int horizontalTopRightError = 0; 
+		for(int x = 0; x < 85; x++) 
+			horizontalTopRightError += (get_pixel(CAMERA_HEIGHT/2+85, CAMERA_WIDTH/2-85+x, 3) > threshold)? x : 0;
+		
+		
+		
+		
+	}
+	
+	
+	cout << "Done!" << endl;
+}
+
+void QuandrantFour() {
+	cout << "Quandrant four not implemented" << endl;
+}
+
+
+int main() {
+	init();
+	
+	QuandrantOne();
+	QuandrantTwo();
+	QuandrantThree();
+	QuandrantFour();
+
+	
 	stop(0);
 return 0;
 }
