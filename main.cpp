@@ -14,7 +14,6 @@ const double CAMERA_HEIGHT = 240; //Control Resolution from Camera
 const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
 
-double kP = 0.011; // Scaling value to be determined by experiments
 const int threshold = 120;
 
 //////////////////////////////// Helper functions ///////////////////////////////////////
@@ -28,6 +27,36 @@ bool isOnLine(int height) {
 	averagePixelWhiteness /= numberCenterPixels;
 		
 	return (averagePixelWhiteness >= threshold);  //If the value of the average greater than or = to white
+}
+
+int getThresholdHorizontal(int r, int c, int size) {
+		int max =  0;
+		int min = 1000;
+		for(int i = 0; i < size; i++) {
+			int pixel = get_pixel(r, c+i, 3);
+			if(pixel > max) max = pixel;
+			if(pixel < min) min = pixel;
+		}
+		
+		if(max < 100) 
+			return 0;
+			
+		return (max+min)/2;		
+}
+
+int getThresholdVertical(int r, int c, int size) {
+		int max =  0;
+		int min = 1000;
+		for(int i = 0; i < size; i++) {
+			int pixel = get_pixel(r+(size-i), c, 3);
+			if(pixel > max) max = pixel;
+			if(pixel < min) min = pixel;
+		}
+		
+		if(max < 100) 
+			return 0;
+			
+		return (max+min)/2;		
 }
 
 int getRightSideErrorSignal() {
@@ -50,13 +79,7 @@ int getLeftSideErrorSignal() {
 	return leftError;
 }
 
-int getTopErrorSignal() {
-	int topError = 0;
-	for(int i = 0; i < 150; i++) {
-		topError += ( get_pixel(150, CAMERA_WIDTH/2-75+i, 3) > threshold ) ? i : 0;
-	}
-	return topError;
-}
+
 
 //////////////////////////////// Helper functions ///////////////////////////////////////
 
@@ -130,64 +153,65 @@ void QuandrantTwo() {
 
 void QuandrantThree() {
 	cout << "Running Quandrant 3..." << endl;
-	int right_velocity = 0;
-	int left_velocity = 0;
 
-	int speed = 80; 
-	const double kP = 0.011;	
+
+
+	const double kP = 0.011;
+ 
+	
 	while(true) {
 		take_picture();
 
-		int max =  0;
-		int min = 1000;
-		for(int i = 0; i < 120; i++) {
-			int pixel = get_pixel(50, CAMERA_WIDTH/2+i-60, 3);
-			if(pixel > max) max = pixel;
-			if(pixel < min) min = pixel;
-		}
+				const int TotalSidePixels = (int)(CAMERA_WIDTH/2)-40; //The -40 is so it doesnt read the 40 pixels that are used for line detection in the middle
+	
+				double rightError = 0;
+				int threshold = getThresholdHorizontal(CAMERA_HEIGHT/2, TotalRightSidePixels, TotalRightSidePixels);
+				for(int i = 0; i < TotalRightSidePixels; i++) 
+					rightError += ( get_pixel(CAMERA_HEIGHT/2, TotalRightSidePixels-i, 3) > threshold) ? i : 0; // Be warned this is right from the ROBOTS perspective
 
-		if(max > 100) { // Actually isnt all black
-			int thresholdTop = (max+min)/2;
-			int Righterror_signal = 0;
+				double leftError = 0;
+				int threshold = getThresholdHorizontal(CAMERA_HEIGHT/2, TotalRightSidePixels+80, TotalRightSidePixels);
+				for(int i = 0; i < TotalLeftSidePixels; i++) 
+					leftError += ( get_pixel(CAMERA_HEIGHT/2, i+TotalLeftSidePixels+80, 3) > threshold ) ? i : 0; //+TotalSidePixels is for skipping what we already put into Right[] above. +80 is to skip the middle 
 
-			for(int i = 0; i < 60; i++) {
-        	                Righterror_signal += (get_pixel(50, CAMERA_WIDTH/2+i+20, 3) > thresholdTop) ? i : 0;
-			}
+				if(!isOnLine(CAMERA_HEIGHT/2) && rightError <= 0 && leftError <= 0) { // If we're off the line and cant see the line
+						
+						if(left_velocity < right_velocity) { //If we were last turning left
+							
+							set_motor(LEFT_MOTOR, -60);
+							set_motor(RIGHT_MOTOR, -30);
+							sleep1(0,2000);
+						} else { // If we were last turning right
+							
+							set_motor(LEFT_MOTOR, -30);
+							set_motor(RIGHT_MOTOR, -60);
+							sleep1(0,2000);
+						}
+					continue; // Skip the rest of the instructions in this loop
+				}
 
-			int Lefterror_signal = 0;
-			for(int i = 0; i < 60; i++) {
-				Lefterror_signal += (get_pixel(50, CAMERA_WIDTH/2+i-60, 3) > thresholdTop) ? 60-i : 0;
-			}
+				if(rightError > 1500 && leftError > 1500) {// If both are high values then its most probably a junction
+					set_motor(RIGHT_MOTOR, 50);
+					set_motor(LEFT_MOTOR, 50);
+					sleep1(0, 200);
+					
+					set_motor(RIGHT_MOTOR, 50);
+					set_motor(LEFT_MOTOR, -50);
+					sleep1(0, 200);
+					
+					continue;
+				}
+				
+				double error_signal = (rightError - leftError);
+				double proportional_signal = error_signal*kP;
 
-			double error_signal = (Righterror_signal - Lefterror_signal);
-			
+				int final_signal = proportional_signal;
+				right_velocity = 60+final_signal;
+				left_velocity = 60-1*final_signal;
 
-		}
-
-		max = 0;
-		min = 1000;
-		for(int i = 0; i < 100; i++) {
-			int pixel = get_pixel(50+i, CAMERA_WIDTH/2-60, 3);
-			if(pixel > max) max = pixel;
-                        if(pixel < min) min = pixel;
-		}
-
-		if(max > 100) {
-			int thresholdLeft = (max+min)/2;
-			int LeftError = 0;
-			for(int i = 0; i < 100; i++) {
-                                LeftError += (get_pixel(50+i, CAMERA_WIDTH/2-60, 3) > thresholdLeft) ? 100-i : 0;
-                        }
-
-			if(LeftError > 100) {
-				cout << "Top ish " << endl;
-			} else {
-				cout << "Not top" << endl;
-			}
-			
-
-		}
-
+				set_motor(RIGHT_MOTOR, right_velocity);
+				set_motor(LEFT_MOTOR, left_velocity);   
+		
 
 	}
 	
