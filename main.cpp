@@ -132,32 +132,63 @@ void QuandrantThree() {
 	cout << "Running Quandrant 3..." << endl;
 	int right_velocity = 0;
 	int left_velocity = 0;
+
+	int speed = 80; 
 	const double kP = 0.011;	
 	while(true) {
 		take_picture();
 
-				
-			        double rightError = ((double)getRightSideErrorSignal());
-                                double leftError  = ((double)getLeftSideErrorSignal());
+		int max =  0;
+		int min = 1000;
+		for(int i = 0; i < 120; i++) {
+			int pixel = get_pixel(50, CAMERA_WIDTH/2+i-60, 3);
+			if(pixel > max) max = pixel;
+			if(pixel < min) min = pixel;
+		}
+
+		if(max > 100) { // Actually isnt all black
+			int thresholdTop = (max+min)/2;
+			int Righterror_signal = 0;
+
+			for(int i = 0; i < 60; i++) {
+        	                Righterror_signal += (get_pixel(50, CAMERA_WIDTH/2+i+20, 3) > thresholdTop) ? i : 0;
+			}
+
+			int Lefterror_signal = 0;
+			for(int i = 0; i < 60; i++) {
+				Lefterror_signal += (get_pixel(50, CAMERA_WIDTH/2+i-60, 3) > thresholdTop) ? 60-i : 0;
+			}
+
+			double error_signal = (Righterror_signal - Lefterror_signal);
+			
+
+		}
+
+		max = 0;
+		min = 1000;
+		for(int i = 0; i < 100; i++) {
+			int pixel = get_pixel(50+i, CAMERA_WIDTH/2-60, 3);
+			if(pixel > max) max = pixel;
+                        if(pixel < min) min = pixel;
+		}
+
+		if(max > 100) {
+			int thresholdLeft = (max+min)/2;
+			int LeftError = 0;
+			for(int i = 0; i < 100; i++) {
+                                LeftError += (get_pixel(50+i, CAMERA_WIDTH/2-60, 3) > thresholdLeft) ? 100-i : 0;
+                        }
+
+			if(LeftError > 100) {
+				cout << "Top ish " << endl;
+			} else {
+				cout << "Not top" << endl;
+			}
+			
+
+		}
 
 
-				if(getTopErrorSignal() < 2 && rightError > 1500 && leftError > 1500) {
-					rightError = 0;
-					leftError = 2000;
-				}
-
-
-                                double error_signal = (rightError - leftError);
-                                double proportional_signal = error_signal*kP;
-
-                                int final_signal = proportional_signal;
-                                right_velocity = 80+final_signal;
-                                left_velocity = 80-1*final_signal;
-
-                                set_motor(RIGHT_MOTOR, right_velocity);
-                                set_motor(LEFT_MOTOR, left_velocity);
-
-				
 	}
 	
 	
@@ -172,8 +203,8 @@ void QuandrantFour() {
 int main() {
 	init();
 	
-	QuandrantOne();
-	QuandrantTwo();
+//	QuandrantOne();
+//	QuandrantTwo();
 	QuandrantThree();
 	QuandrantFour();
 
