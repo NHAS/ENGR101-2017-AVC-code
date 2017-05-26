@@ -202,7 +202,7 @@ void QuandrantThree() {
 				double rightError = 0;
 				int localthreshold = 120;//getThresholdHorizontal(CAMERA_HEIGHT/2, TotalSidePixels, TotalSidePixels);
 				for(int i = 0; i < TotalSidePixels; i++) 
-)					rightError += ( get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3) > localthreshold) ? i : 0; // Be warned this is right from the ROBOTS perspective
+					rightError += ( get_pixel(CAMERA_HEIGHT/2, TotalSidePixels-i, 3) > localthreshold) ? i : 0; // Be warned this is right from the ROBOTS perspective
 
 				double leftError = 0;
 				localthreshold = 120;//getThresholdHorizontal(CAMERA_HEIGHT/2, TotalSidePixels+80, TotalSidePixels);
