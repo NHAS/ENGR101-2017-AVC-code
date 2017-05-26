@@ -278,9 +278,9 @@ void QuandrantFour() {
 		// If left reading is greater (further away), turn right.
 		if(left_reading > right_reading){
 			//sensor_difference will be negative.
-			if(left_reading < 120){
+			if(left_reading < 150){
 				set_motor(LEFT_MOTOR, 70-1*sensor_difference);
-				set_motor(RIGHT_MOTOR, 50);
+				set_motor(RIGHT_MOTOR, -50);
 			}
 			else{
 				set_motor(LEFT_MOTOR, 50-1*sensor_difference);
