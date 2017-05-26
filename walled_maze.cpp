@@ -37,15 +37,16 @@ int main(){
 		double sensor_difference = (right_reading - left_reading) * mazeFactor;
 
 		
-		// If left reading is greater (further away), turn left.
+		// If left reading is greater (further away), turn right.
 		if(left_reading > right_reading){
-			
+			//sensor_difference will be negative.
 			set_motor(LEFT_MOTOR, 50-1*sensor_difference);
 			set_motor(RIGHT_MOTOR, 50+sensor_difference);
 		}
 		
-		// If right reading is greater, turn right.
-		else if(right_reading > left_reading) {			
+		// If right reading is greater, turn left.
+		else if(right_reading > left_reading) {		
+			//sensor_difference will be positive.
 			set_motor(LEFT_MOTOR, 50-1*sensor_difference);
 			set_motor(RIGHT_MOTOR, 50+sensor_difference);
 		}
@@ -57,7 +58,7 @@ int main(){
 			set_motor(RIGHT_MOTOR, 50);
 		}
 		//Wait for a lil'
-		sleep1(0, 5000);
+		sleep1(0, 50000);
 	}
 return 0;
 }
