@@ -123,8 +123,7 @@ void QuandrantOne() {
 	connect_to_server("130.195.6.196", 1024);
 	
 	send_to_server("Please");
-	
-	char returnMessage[24] = {'\0'};
+		char returnMessage[24] = {'\0'};
 	receive_from_server(returnMessage);
 	string StringReturnMessage(returnMessage);
 	StringReturnMessage+="Please";
@@ -174,8 +173,8 @@ void QuandrantTwo() {
 				double proportional_signal = error_signal*kP;
 
 				int final_signal = proportional_signal;
-				right_velocity = 80+final_signal;
-				left_velocity = 80-1*final_signal;
+				right_velocity = 70+final_signal;
+				left_velocity = 70-1*final_signal;
 
 				set_motor(RIGHT_MOTOR, right_velocity);
 				set_motor(LEFT_MOTOR, left_velocity);   
