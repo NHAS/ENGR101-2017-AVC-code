@@ -319,7 +319,7 @@ void QuandrantFour() {
 int main() {
 	init();
 	
-//	QuandrantOne();
+	QuandrantOne();
 	QuandrantTwo();
 	QuandrantThree();
 	QuandrantFour();
