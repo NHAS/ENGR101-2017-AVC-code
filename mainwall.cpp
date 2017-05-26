@@ -252,7 +252,7 @@ void QuandrantFour() {
 	int left_reading = 0;
 	int right_reading = 0;
 	
-	while(!mazeDone){ //Looping whilst 'done' condition is not met.
+	while(true){ 
 		
 		//Reading sensors
 		left_reading = read_analog(LEFT_SENSOR); 
