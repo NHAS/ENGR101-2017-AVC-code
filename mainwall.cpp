@@ -45,7 +45,7 @@ bool isMidRed(int height) {
 
 	averagePixelRedness /= numberCenterPixels;
 		
-	return (averagePixelRedness >= threshold);  //If the value of the average greater than or = to red
+	return (averagePixelRedness >= 200);  //If the value of the average greater than or = to red
 }
 
 int getThresholdHorizontal(int r, int c, int size) {
