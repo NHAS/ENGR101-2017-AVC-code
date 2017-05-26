@@ -223,7 +223,7 @@ void QuandrantThree() {
 					continue;
 				}
 				
-				if(get_pixel(CAMERA_HEIGHT/2, CAMERA_WIDTH/2, 1) > 150){
+				if(get_pixel(CAMERA_HEIGHT/2, CAMERA_WIDTH/2, 0) > 200){
 					cout << "I SEE RED" << endl;
 					break;
 				}
@@ -245,9 +245,7 @@ void QuandrantThree() {
 	cout << "Done!" << endl;
 }
 
-void QuandrantFour() {
-	init();
-	
+void QuandrantFour() {	
 	//Variables for the sensor readings.
 	int left_reading = 0;
 	int right_reading = 0;
