@@ -37,6 +37,17 @@ bool isOnLine(int height) {
 	return (averagePixelWhiteness >= threshold);  //If the value of the average greater than or = to white
 }
 
+bool isMidRed(int height) {
+	const int numberCenterPixels = 40;
+    double averagePixelRedness = 0;
+    for(int i = 0; i < numberCenterPixels; i++)  //80 Pixels in the center are our detector
+		averagePixelRedness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 0);   // Go from -20 from the center to +20 of the center
+
+	averagePixelRedness /= numberCenterPixels;
+		
+	return (averagePixelRedness >= threshold);  //If the value of the average greater than or = to red
+}
+
 int getThresholdHorizontal(int r, int c, int size) {
 		int max =  0;
 		int min = 1000;
@@ -223,7 +234,7 @@ void QuandrantThree() {
 					continue;
 				}
 				
-				if(get_pixel(CAMERA_HEIGHT/2, CAMERA_WIDTH/2, 0) > 200){
+				if(isMidRed(CAMERA_HEIGHT/2){
 					cout << "I SEE RED" << endl;
 					break;
 				}
