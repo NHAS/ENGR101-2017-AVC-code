@@ -222,7 +222,11 @@ void QuandrantThree() {
 
 					continue;
 				}
-
+				
+				if(get_pixel(CAMERA_HEIGHT/2, CAMERA_WIDTH/2, 1) > 150){
+					cout << "I SEE RED" << endl;
+					break;
+				}
 
 				double error_signal = (rightError - leftError);
 				double proportional_signal = error_signal*kP;
