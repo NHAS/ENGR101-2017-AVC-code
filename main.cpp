@@ -220,8 +220,8 @@ void QuandrantThree() {
 				double proportional_signal = error_signal*kP;
 
 				int final_signal = proportional_signal;
-				right_velocity = 80+final_signal;
-				left_velocity = 80-1*final_signal;
+				right_velocity = 70+final_signal;
+				left_velocity = 70-1*final_signal;
 
 				set_motor(RIGHT_MOTOR, right_velocity);
 				set_motor(LEFT_MOTOR, left_velocity);   
