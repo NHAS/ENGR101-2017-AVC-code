@@ -40,12 +40,18 @@ bool isOnLine(int height) {
 bool isMidRed(int height) {
 	const int numberCenterPixels = 40;
     double averagePixelRedness = 0;
+	double averagePixelGreenness = 0;
+	double averagePixelBlueness = 0;
     for(int i = 0; i < numberCenterPixels; i++)  //80 Pixels in the center are our detector
 		averagePixelRedness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 0);   // Go from -20 from the center to +20 of the center
+		averagePixelGreenness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 1);   // Go from -20 from the center to +20 of the center
+		averagePixelBlueness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 2);   // Go from -20 from the center to +20 of the center
 
 	averagePixelRedness /= numberCenterPixels;
+	averagePixelGreenness /= numberCenterPixels;
+	averagePixelBlueness /= numberCenterPixels;
 		
-	return (averagePixelRedness >= 200);  //If the value of the average greater than or = to red
+	return (averagePixelRedness >= 170 && averagePixelGreenness <= 120 && averagePixelBlueness <= 120);  //If the value of the average greater than or = to red
 }
 
 int getThresholdHorizontal(int r, int c, int size) {
