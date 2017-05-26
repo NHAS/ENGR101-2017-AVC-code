@@ -42,11 +42,11 @@ bool isMidRed(int height) {
     double averagePixelRedness = 0;
 	double averagePixelGreenness = 0;
 	double averagePixelBlueness = 0;
-    for(int i = 0; i < numberCenterPixels; i++)  //80 Pixels in the center are our detector
+    for(int i = 0; i < numberCenterPixels; i++){  //80 Pixels in the center are our detector
 		averagePixelRedness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 0);   // Go from -20 from the center to +20 of the center
 		averagePixelGreenness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 1);   // Go from -20 from the center to +20 of the center
 		averagePixelBlueness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 2);   // Go from -20 from the center to +20 of the center
-
+    }
 	averagePixelRedness /= numberCenterPixels;
 	averagePixelGreenness /= numberCenterPixels;
 	averagePixelBlueness /= numberCenterPixels;
