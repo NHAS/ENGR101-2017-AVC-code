@@ -58,7 +58,7 @@ int main(){
 			set_motor(RIGHT_MOTOR, 50);
 		}
 		//Wait for a lil'
-		sleep1(0, 50000);
+		sleep1(0, 150000);
 	}
 return 0;
 }
