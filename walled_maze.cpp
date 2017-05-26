@@ -38,7 +38,7 @@ int main(){
 			
 		// If closer to the right wall, turn left.
 		if(right_reading > THRESHOLD){
-			if(right_reading > THRESHOLD+80){
+			if(right_reading > THRESHOLD+120){
 				set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
 				set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
 				sleep1(0, 300000);
