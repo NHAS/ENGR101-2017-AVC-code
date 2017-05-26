@@ -268,47 +268,32 @@ void QuandrantFour() {
 	
 	while(true){ 
 		
-		//Reading sensors
+		//Reading sensors - will need to be set to analog sensor pins.
 		left_reading = read_analog(LEFT_SENSOR); 
 		right_reading = read_analog(RIGHT_SENSOR);
+		std::cout << "Left: " << left_reading << " Right: " << right_reading << std::endl;
+		double sensor_difference = (right_reading - left_reading) * mazeFactor;
+
 		
-		std::cout << "Left: " << left_reading << " Right: " << right_reading << std::endl; //Printing sensor values.
-		
-		double wall_distance = (mazeThres - right_reading) * mazeFactor; //Distance from the wall multiplied by a constant.
-			
-		// If closer to the right wall, turn left.
-		if(right_reading > mazeThres){
-			if(right_reading > mazeThres+80){
-				set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
-				set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
-				sleep1(0, 300000);
-			}
-			else{
-			//wall_distance will be negative, so add to left wheel and remove from right.
-			set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
-			set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
-			}
+		// If left reading is greater (further away), turn right.
+		if(left_reading > right_reading){
+			//sensor_difference will be negative.
+			set_motor(LEFT_MOTOR, 50-1*sensor_difference);
+			set_motor(RIGHT_MOTOR, 50+sensor_difference);
 		}
 		
-		// If closer to the left wall, turn right.
-		else if(right_reading < mazeThres) {	
-			if(right_reading < mazeThres-165){
-				sleep1(0, 800000);
-				set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
-				set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
-				sleep1(0, 170000);
-			}
-			else{
-			//wall_distance will be positive, so add to left wheel and remove from right.
-			set_motor(LEFT_MOTOR, DEF_SPD + 1*wall_distance);
-			set_motor(RIGHT_MOTOR, DEF_SPD - wall_distance);
-			}
+		// If right reading is greater, turn left.
+		else if(right_reading > left_reading) {		
+			//sensor_difference will be positive.
+			set_motor(LEFT_MOTOR, 50-1*sensor_difference);
+			set_motor(RIGHT_MOTOR, 50+sensor_difference);
 		}
 		
 		// Otherwise, continue forward.
+		
 		else{
-			set_motor(LEFT_MOTOR, DEF_SPD);
-			set_motor(RIGHT_MOTOR, DEF_SPD);
+			set_motor(LEFT_MOTOR, 50);
+			set_motor(RIGHT_MOTOR, 50);
 		}
 		//Wait for a lil'
 		sleep1(0, 5000);
