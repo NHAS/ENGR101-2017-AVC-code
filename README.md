@@ -25,14 +25,18 @@ pi IP Address: pi@10.140.30.137
 
 
 ## Week 3
-- [ ] Jordan              - Program white line maze.
-- [ ] Alex, James         - Program walled maze code.
-- [ ] Jordan, Alex, James - Code review to bring up understanding of current work.
+- [x] Jordan              - Program white line maze.
+- [x] Alex, James         - Program walled maze code.
+- [x] Jordan, Alex, James - Code review to bring up understanding of current work.
 - [x] Henry, Chris        - Finish creating battery housing. 
-- [ ] Henry, Chris        - Create a form of cable management. 
+- [x] Henry, Chris        - Create a form of cable management. 
 - [x] Henry, Chris        - Mount range sensors at an effectively. 1/2 done
 
 
 ## Week 4 
-- [ ] Jordan, Alex, James - Finishing up or testing code. 
-- [ ] Henry, Chris        - Completely finalized and tested physical casing. Cables managed, sensors mounted
+- [x] Jordan, Alex, James - Finishing up or testing code. 
+- [x] Henry, Chris        - Completely finalized and tested physical casing. Cables managed, sensors mounted
+
+## Week 5
+- [] TEST DAY
+
