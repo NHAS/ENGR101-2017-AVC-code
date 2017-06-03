@@ -21,22 +21,24 @@ pi IP Address: pi@10.140.30.137
 ## Week 2
 - [x] Jordan, Alex        - programming robot to move in according to the track white lines.
 - [x] James               - Programming support, testing/ debugging.
-- [x ] Henry, Chris        - Use CAD to contruct chasis
-
+- [x] Henry, Chris        - Use CAD to contruct chasis
 
 ## Week 3
-- [x] Jordan              - Program white line maze.
-- [x] Alex, James         - Program walled maze code.
-- [x] Jordan, Alex, James - Code review to bring up understanding of current work.
-- [x] Henry, Chris        - Finish creating battery housing. 
-- [x] Henry, Chris        - Create a form of cable management. 
-- [x] Henry, Chris        - Mount range sensors at an effectively. 1/2 done
-
+- [x] Jordan           		- Program white line maze.
+- [x] Alex, James      		- Program walled maze code.
+- [x] Henry       			- Finish creating battery housing. 
+- [x] Henry      			- Create a form of cable management. 
+- [x] Henry       			- Mount range sensors at an effectively. 1/2 done
+- [ ] Jordan, Alex, James 	- Code review to bring up understanding of current work.
+- [x] Henry     			- Finish creating battery housing. 
+- [x] Henry       			- Create a form of cable management. 
+- [x] Henry       			- Mount range sensors at an effectively.
 
 ## Week 4 
-- [x] Jordan, Alex, James - Finishing up or testing code. 
-- [x] Henry, Chris        - Completely finalized and tested physical casing. Cables managed, sensors mounted
+- [x] Jordan, Alex, James	- Finishing up or testing code. 
+
+- [x] Henry       			- Completely finalized and tested physical casing. Cables managed, sensors mounted
 
 ## Week 5
-- [] TEST DAY
+- [x] TEST DAY
 
