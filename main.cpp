@@ -14,6 +14,14 @@ const double CAMERA_HEIGHT = 240; //Control Resolution from Camera
 const int LEFT_MOTOR = 1;
 const int RIGHT_MOTOR = 2;
 
+const int LEFT_SENSOR = 0;
+const int RIGHT_SENSOR = 1;
+
+const int DEF_SPD = 50; // Default speed for motors
+const int mazeThres = 310; // Threshold value for proximity to left wall - Change with testing.
+
+const double mazeFactor = 0.15; // To be changed with testing.
+
 const int threshold = 120;
 
 //////////////////////////////// Helper functions ///////////////////////////////////////
@@ -27,6 +35,23 @@ bool isOnLine(int height) {
 	averagePixelWhiteness /= numberCenterPixels;
 		
 	return (averagePixelWhiteness >= threshold);  //If the value of the average greater than or = to white
+}
+
+bool isMidRed(int height) {
+	const int numberCenterPixels = 40;
+    double averagePixelRedness = 0;
+	double averagePixelGreenness = 0;
+	double averagePixelBlueness = 0;
+    for(int i = 0; i < numberCenterPixels; i++){  //80 Pixels in the center are our detector
+		averagePixelRedness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 0);   // Go from -20 from the center to +20 of the center
+		averagePixelGreenness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 1);   // Go from -20 from the center to +20 of the center
+		averagePixelBlueness += get_pixel(height, i+(CAMERA_WIDTH/2)-20, 2);   // Go from -20 from the center to +20 of the center
+    }
+	averagePixelRedness /= numberCenterPixels;
+	averagePixelGreenness /= numberCenterPixels;
+	averagePixelBlueness /= numberCenterPixels;
+		
+	return (averagePixelRedness >= 170 && averagePixelGreenness <= 120 && averagePixelBlueness <= 120);  //If the value of the average greater than or = to red
 }
 
 int getThresholdHorizontal(int r, int c, int size) {
@@ -104,8 +129,7 @@ void QuandrantOne() {
 	connect_to_server("130.195.6.196", 1024);
 	
 	send_to_server("Please");
-	
-	char returnMessage[24] = {'\0'};
+		char returnMessage[24] = {'\0'};
 	receive_from_server(returnMessage);
 	string StringReturnMessage(returnMessage);
 	StringReturnMessage+="Please";
@@ -155,8 +179,8 @@ void QuandrantTwo() {
 				double proportional_signal = error_signal*kP;
 
 				int final_signal = proportional_signal;
-				right_velocity = 80+final_signal;
-				left_velocity = 80-1*final_signal;
+				right_velocity = 70+final_signal;
+				left_velocity = 70-1*final_signal;
 
 				set_motor(RIGHT_MOTOR, right_velocity);
 				set_motor(LEFT_MOTOR, left_velocity);   
@@ -214,7 +238,11 @@ void QuandrantThree() {
 
 					continue;
 				}
-
+				
+				if(isMidRed(CAMERA_HEIGHT/2)){
+					cout << "I SEE RED" << endl;
+					break;
+				}
 
 				double error_signal = (rightError - leftError);
 				double proportional_signal = error_signal*kP;
@@ -233,15 +261,57 @@ void QuandrantThree() {
 	cout << "Done!" << endl;
 }
 
-void QuandrantFour() {
-	cout << "Quandrant four not implemented" << endl;
+void QuandrantFour() {	
+	//Variables for the sensor readings.
+	int left_reading = 0;
+	int right_reading = 0;
+	
+	while(true){ 
+		
+		//Reading sensors - will need to be set to analog sensor pins.
+		left_reading = read_analog(LEFT_SENSOR); 
+		right_reading = read_analog(RIGHT_SENSOR);
+		std::cout << "Left: " << left_reading << " Right: " << right_reading << std::endl;
+		double sensor_difference = (right_reading - left_reading) * mazeFactor;
+
+		
+		// If left reading is greater (further away), turn right.
+		if(left_reading < 150 && left_reading < right_reading){
+				set_motor(LEFT_MOTOR, 50-1*sensor_difference);
+				set_motor(RIGHT_MOTOR, 50);
+				sleep1(0, 350000);
+			}
+		else if(left_reading > right_reading){
+			//sensor_difference will be negative.
+			
+				set_motor(LEFT_MOTOR, 50-1*sensor_difference);
+				set_motor(RIGHT_MOTOR, 50+sensor_difference);
+			
+		}
+		
+		// If right reading is greater, turn left.
+		else if(right_reading > left_reading) {		
+			//sensor_difference will be positive.
+			set_motor(LEFT_MOTOR, 50-1*sensor_difference);
+			set_motor(RIGHT_MOTOR, 50+sensor_difference);
+		}
+		
+		// Otherwise, continue forward.
+		
+		else{
+			set_motor(LEFT_MOTOR, 50);
+			set_motor(RIGHT_MOTOR, 50);
+		}
+		//Wait for a lil'
+		sleep1(0, 5000);
+	}
 }
 
 
 int main() {
 	init();
 	
-//	QuandrantOne();
+	QuandrantOne();
 	QuandrantTwo();
 	QuandrantThree();
 	QuandrantFour();
